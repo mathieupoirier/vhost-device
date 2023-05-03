@@ -3,6 +3,7 @@
     {
       "test_name": "clippy",
       "command": "cargo clippy --workspace --bins --examples --benches --all-features --all-targets -- -D warnings -D clippy::undocumented_unsafe_blocks",
+      "hypervisor": "xen",
       "platform": [
         "aarch64"
       ]
@@ -10,7 +11,6 @@
     {
       "test_name": "clippy",
       "command": "cargo clippy --workspace --bins --examples --benches --all-features --all-targets -- -D warnings -D clippy::undocumented_unsafe_blocks",
-      "hypervisor": "xen",
       "platform": [
         "x86_64"
       ]
