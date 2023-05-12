@@ -1,0 +1,83 @@
+steps:
+- label: clippy-aarch64
+  command: cargo clippy --workspace --bins --examples --benches --all-features --all-targets
+    -- -D warnings -D clippy::undocumented_unsafe_blocks
+  retry:
+    automatic: false
+  agents:
+    os: linux
+    platform: arm.metal
+    hypervisor: xen
+  plugins:
+  - docker#v5.3.0:
+      image: rustvmm/dev:v18
+      always-pull: true
+      network: host
+  timeout_in_minutes: '240'
+- label: clippy-x86_64
+  command: cargo clippy --workspace --bins --examples --benches --all-features --all-targets
+    -- -D warnings -D clippy::undocumented_unsafe_blocks
+  retry:
+    automatic: false
+  agents:
+    os: linux
+    platform: x86_64.metal
+    hypervisor: kvm
+  plugins:
+  - docker#v5.3.0:
+      image: rustvmm/dev:v18
+      always-pull: true
+  timeout_in_minutes: 15
+- label: check-warnings-x86_64
+  command: RUSTFLAGS="-D warnings" cargo check --all-targets --all-features --workspace
+  retry:
+    automatic: false
+  agents:
+    os: linux
+    platform: x86_64.metal
+    hypervisor: kvm
+  plugins:
+  - docker#v5.3.0:
+      image: rustvmm/dev:v18
+      always-pull: true
+  timeout_in_minutes: 15
+- label: check-warnings-aarch64
+  command: RUSTFLAGS="-D warnings" cargo check --all-targets --all-features --workspace
+  retry:
+    automatic: false
+  agents:
+    os: linux
+    platform: arm.metal
+    hypervisor: kvm
+  plugins:
+  - docker#v5.3.0:
+      image: rustvmm/dev:v18
+      always-pull: true
+  timeout_in_minutes: 15
+- label: coverage-x86_64
+  command: pytest $(find . -type f -name "test_coverage.py")
+  retry:
+    automatic: false
+  agents:
+    os: linux
+    platform: x86_64.metal
+    hypervisor: kvm
+  plugins:
+  - docker#v5.3.0:
+      image: rustvmm/dev:v18
+      always-pull: true
+      privileged: true
+  timeout_in_minutes: 15
+- label: commit-format
+  command: pytest $(find . -type f -name "test_commit_format.py")
+  retry:
+    automatic: false
+  agents:
+    os: linux
+    hypervisor: kvm
+  plugins:
+  - docker#v5.3.0:
+      image: rustvmm/dev:v18
+      always-pull: true
+      propagate-environment: true
+  timeout_in_minutes: 15
