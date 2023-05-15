@@ -5,6 +5,9 @@
       "command": "cargo clippy --workspace --bins --examples --benches --all-features --all-targets -- -D warnings -D clippy::undocumented_unsafe_blocks",
       "timeout_in_minutes": "240",
       "hypervisor": "xen",
+      "docker_plugin": {
+        "network": "host"
+      },
       "platform": [
         "aarch64"
       ]
